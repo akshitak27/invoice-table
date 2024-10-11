@@ -11,6 +11,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { styled } from '@mui/system';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
+
 const HeaderContainer = styled(Grid)(({ theme }) => ({
   marginBottom: '20px',
 }));
@@ -42,85 +43,92 @@ const InvoiceTable = () => {
   const [orderBy, setOrderBy] = useState('id'); // Column to sort by
   const [selected, setSelected] = useState([]); // For checkbox selection
   const [darkMode, setDarkMode] = useState(false); // Dark mode state
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [statusFilter, setStatusFilter] = useState('All');
 
-  // Theme Definitions
- // Theme Definitions
-const lightTheme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#7F3DFF', // Primary color for light mode
-    },
-  },
-  components: {
-    MuiToolbar: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#f5f5f5', // Background color for light mode
-        },
-      },
-    },
-  },
-});
+  const [searchItem, setSearchItem] = useState('');
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    background: {
-      default: '#121212',
-      paper: '#1e1e1e',
-    },
-    text: {
-      primary: '#ffffff',
-      secondary: '#b0b0b0',
-    },
-  },
-  components: {
-    MuiToolbar: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#1e1e1e', // Background color for dark mode
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: '#ffffff',
-            },
-            '&:hover fieldset': {
-              borderColor: '#7F3DFF',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#7F3DFF',
-            },
-          },
-        },
-      },
-    },
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: '#ffffff',
-            },
-            '&:hover fieldset': {
-              borderColor: '#7F3DFF',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#7F3DFF',
-            },
-          },
-        },
-      },
-    },
-  },
-});
-
+  const filteredInvoices = initialInvoices.filter(invoice => {
+    const matchesSearch = invoice.name.toLowerCase().includes(searchItem.toLowerCase());
+    const matchesStatus = statusFilter === 'All' || invoice.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
   
+  // Theme Definitions
+  const lightTheme = createTheme({
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#7F3DFF', // Primary color for light mode
+      },
+    },
+    components: {
+      MuiToolbar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#f5f5f5', // Background color for light mode
+          },
+        },
+      },
+    },
+  });
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+      background: {
+        default: '#121212',
+        paper: '#1e1e1e',
+      },
+      text: {
+        primary: '#ffffff',
+        secondary: '#b0b0b0',
+      },
+    },
+    components: {
+      MuiToolbar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#1e1e1e', // Background color for dark mode
+          },
+        },
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#ffffff',
+              },
+              '&:hover fieldset': {
+                borderColor: '#7F3DFF',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#7F3DFF',
+              },
+            },
+          },
+        },
+      },
+      MuiSelect: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#ffffff',
+              },
+              '&:hover fieldset': {
+                borderColor: '#7F3DFF',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#7F3DFF',
+              },
+            },
+          },
+        },
+      },
+    },
+  });
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -144,7 +152,7 @@ const darkTheme = createTheme({
     return a[orderBy] > b[orderBy] ? -1 : 1;
   };
 
-  const sortedInvoices = initialInvoices.sort(sortComparator);
+  const sortedInvoices = filteredInvoices.sort(sortComparator);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -193,39 +201,46 @@ const darkTheme = createTheme({
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <Grid container alignItems="center" justifyContent="space-between">
-        
         {/* Dark Mode Toggle */}
         <Switch
           checked={darkMode}
           onChange={() => setDarkMode(!darkMode)}
-          color="default"
-          inputProps={{ 'aria-label': 'dark mode toggle' }}
+          inputProps={{ 'aria-label': 'controlled' }}
         />
+      
       </Grid>
+
       <HeaderContainer container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <CreateButton variant="contained">
-            + Create Invoice
-          </CreateButton>
-        </Grid>
-        <Grid item xs={12} sm={6} style={{  display: 'flex', justifyContent: 'flex-end' }}>
-          <TextField
-            label="Search Invoice"
-            variant="outlined"
-            size="small"
-            style={{ marginRight: '10px' }}
-          />
-          <FormControl variant="outlined" size="small" style={{ width:'150px', display: 'flex', justifyContent: 'flex-end' }}>
-            <InputLabel>Invoice Status</InputLabel>
-            <Select label="Invoice Status">
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Paid">Paid</MenuItem>
-              <MenuItem value="Pending">Pending</MenuItem>
-              <MenuItem value="Overdue">Overdue</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-      </HeaderContainer>
+  <Grid item xs={12} sm={6}>
+    <CreateButton variant="contained">
+      + Create Invoice
+    </CreateButton>
+  </Grid>
+  <Grid item xs={12} sm={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <TextField
+      label="Search Invoice"
+      variant="outlined"
+      size="small"
+      fullWidth
+      value={searchItem}
+      onChange={(e) => setSearchItem(e.target.value)}
+      style={{ marginRight: '10px' }}
+    />
+    <FormControl variant="outlined" size="small" style={{ width: '150px' }}>
+      <InputLabel>Status</InputLabel>
+      <Select
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        label="Status"
+      >
+        <MenuItem value="All">All</MenuItem>
+        <MenuItem value="Paid">Paid</MenuItem>
+        <MenuItem value="Pending">Pending</MenuItem>
+        <MenuItem value="Overdue">Overdue</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+</HeaderContainer>
 
       <TableContainer component={Paper}>
         <Table>
@@ -340,17 +355,16 @@ const darkTheme = createTheme({
             })}
           </TableBody>
         </Table>
-
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={sortedInvoices.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={filteredInvoices.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </ThemeProvider>
   );
 };
