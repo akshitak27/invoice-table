@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './InvoiceTable.css'
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   IconButton, Avatar, Tooltip, Button, TextField, Select, MenuItem, InputLabel, FormControl, Grid, TablePagination, TableSortLabel, Checkbox, Switch
