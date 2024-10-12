@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './InvoiceTable.css'
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Toolbar,
   IconButton, Avatar, Tooltip, Button, TextField, Select, MenuItem, InputLabel, FormControl, Grid, TablePagination, TableSortLabel, Checkbox, Switch
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -11,6 +11,7 @@ import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { styled } from '@mui/system';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useTheme } from './ThemeContext';
 
 
 const HeaderContainer = styled(Grid)(({ theme }) => ({
@@ -43,9 +44,10 @@ const InvoiceTable = () => {
   const [order, setOrder] = useState('asc'); // Sorting order: asc or desc
   const [orderBy, setOrderBy] = useState('id'); // Column to sort by
   const [selected, setSelected] = useState([]); // For checkbox selection
-  const [darkMode, setDarkMode] = useState(false); // Dark mode state
+  // Dark mode state
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
   const [statusFilter, setStatusFilter] = useState('All');
+  const { darkMode, setDarkMode } = useTheme();
 
   const [searchItem, setSearchItem] = useState('');
 
@@ -59,75 +61,22 @@ const InvoiceTable = () => {
   const lightTheme = createTheme({
     palette: {
       mode: 'light',
-      primary: {
-        main: '#7F3DFF', // Primary color for light mode
-      },
+      primary: { main: '#7F3DFF' },
     },
     components: {
       MuiToolbar: {
         styleOverrides: {
-          root: {
-            backgroundColor: '#f5f5f5', // Background color for light mode
-          },
+          root: { backgroundColor: '#f5f5f5' },
         },
       },
     },
   });
-
+  
   const darkTheme = createTheme({
     palette: {
       mode: 'dark',
-      background: {
-        default: '#121212',
-        paper: '#1e1e1e',
-      },
-      text: {
-        primary: '#ffffff',
-        secondary: '#b0b0b0',
-      },
-    },
-    components: {
-      MuiToolbar: {
-        styleOverrides: {
-          root: {
-            backgroundColor: '#1e1e1e', // Background color for dark mode
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#ffffff',
-              },
-              '&:hover fieldset': {
-                borderColor: '#7F3DFF',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#7F3DFF',
-              },
-            },
-          },
-        },
-      },
-      MuiSelect: {
-        styleOverrides: {
-          root: {
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#ffffff',
-              },
-              '&:hover fieldset': {
-                borderColor: '#7F3DFF',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#7F3DFF',
-              },
-            },
-          },
-        },
-      },
+      background: { default: '#121212', paper: '#1e1e1e' },
+      text: { primary: '#ffffff', secondary: '#b0b0b0' },
     },
   });
 
@@ -201,16 +150,20 @@ const InvoiceTable = () => {
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <Grid container alignItems="center" justifyContent="space-between">
-        {/* Dark Mode Toggle */}
-        <Switch
-          checked={darkMode}
-          onChange={() => setDarkMode(!darkMode)}
-          inputProps={{ 'aria-label': 'controlled' }}
-        />
-      
-      </Grid>
-
+      <Toolbar
+        style={{
+          backgroundColor: darkMode ? '#1e1e1e' : '#f5f5f5', // Adjust toolbar background
+        }}
+      >
+        <Grid container alignItems="center" justifyContent="space-between">
+          {/* Dark Mode Toggle */}
+          <Switch
+            checked={darkMode}
+            onChange={() => setDarkMode(!darkMode)}
+            inputProps={{ 'aria-label': 'controlled' }}
+          />
+        </Grid>
+      </Toolbar>
       <HeaderContainer container spacing={2}>
   <Grid item xs={12} sm={6}>
     <CreateButton variant="contained">
