@@ -218,7 +218,7 @@ const InvoiceTable = () => {
                   direction={order}
                   onClick={() => handleSort('id')}
                 >
-                  #
+                  ID
                 </TableSortLabel>
               </TableCell>
               <TableCell>Status</TableCell>
