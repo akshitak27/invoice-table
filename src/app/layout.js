@@ -25,9 +25,7 @@ export const metadata = {
 const Layout = ({ children }) => {
   return (
     <html lang="en">
-      <head>
-        <title>Your App Title</title> {/* Add your app title or other meta tags here */}
-      </head>
+      
       <body>
         <ThemeProvider>
           {children}

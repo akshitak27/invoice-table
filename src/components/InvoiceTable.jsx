@@ -4,11 +4,10 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Toolbar,
   IconButton, Avatar, Tooltip, Button, TextField, Select, MenuItem, InputLabel, FormControl, Grid, TablePagination, TableSortLabel, Checkbox, Switch
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-import CancelIcon from '@mui/icons-material/Cancel';
+import { Edit as EditIcon, Delete as DeleteIcon, CheckCircle as CheckCircleIcon,
+   HourglassEmpty as HourglassEmptyIcon, Cancel as CancelIcon,   } from '@mui/icons-material';
+   import WbSunnyIcon from '@mui/icons-material/WbSunny';
+   import NightlightIcon from '@mui/icons-material/Nightlight';
 import { styled } from '@mui/system';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useTheme } from './ThemeContext';
@@ -66,7 +65,7 @@ const InvoiceTable = () => {
     components: {
       MuiToolbar: {
         styleOverrides: {
-          root: { backgroundColor: '#f5f5f5' },
+          root: { backgroundColor: '#ffffff' },
         },
       },
     },
@@ -151,17 +150,21 @@ const InvoiceTable = () => {
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <Toolbar
-        style={{
-          backgroundColor: darkMode ? '#1e1e1e' : '#f5f5f5', // Adjust toolbar background
-        }}
+
+        // style={{
+        //   backgroundColor: darkMode ? '#1e1e1e' : '#f5f5f5', // Adjust toolbar background
+        // }}
       >
+        <h3>Theme:</h3>
         <Grid container alignItems="center" justifyContent="space-between">
           {/* Dark Mode Toggle */}
-          <Switch
-            checked={darkMode}
-            onChange={() => setDarkMode(!darkMode)}
-            inputProps={{ 'aria-label': 'controlled' }}
-          />
+          <Button onClick={() => setDarkMode(!darkMode)}>
+      {darkMode ? (
+        <WbSunnyIcon style={{ color: '#FFD700' }} /> // Sun icon for light mode
+      ) : (
+        <NightlightIcon style={{ color: '#FFD700' }} /> // Moon icon for dark mode
+      )}
+    </Button>
         </Grid>
       </Toolbar>
       <HeaderContainer container spacing={2}>
